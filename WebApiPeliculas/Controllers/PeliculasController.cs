@@ -10,9 +10,9 @@ namespace WebApiPeliculas.Controllers
     public class PeliculasController : ControllerBase
     {
         private readonly PeliculasAppService peliculasAppService;
-        public PeliculasController()
+        public PeliculasController(PeliculasAppService peliculasAppService)
         {
-            peliculasAppService = new PeliculasAppService();
+            this.peliculasAppService = peliculasAppService;
         }
 
         // Endpoint para listar todas las peliculas
@@ -44,8 +44,8 @@ namespace WebApiPeliculas.Controllers
         [Route("AgregarPelicula")]
         public IActionResult GuadarPelicual([FromBody] Pelicula pelicula)
         {
-            List<Pelicula> peliculas = peliculasAppService.GuadarPelicula(pelicula);
-            return Ok(peliculas);
+            peliculasAppService.GuadarPelicula(pelicula);
+            return Ok("Pelicula agregada exitosamente.");
         }
 
         // Endpoint para actualizar una pelicula existente
@@ -53,8 +53,17 @@ namespace WebApiPeliculas.Controllers
         [Route("ActualizarPelicula")]
         public IActionResult ActualizarPelicula([FromBody] Pelicula pelicula)
         {
-            List<Pelicula> peliculas = peliculasAppService.ActualizarPelicula(pelicula);
-            return Ok(peliculas);
+            peliculasAppService.ActualizarPelicula(pelicula);
+            return Ok("Pelicula actualizada exitosamente");
+        }
+
+        // Endpoint para borrar una pelicula existente
+        [HttpDelete]
+        [Route("EliminarPelicula/{id}")]
+        public IActionResult EliminarPelicula([FromRoute] int id)
+        {
+            peliculasAppService.EliminarPelicula(id);
+            return Ok("Pelicula eliminada exitosamente");
         }
     }
 }

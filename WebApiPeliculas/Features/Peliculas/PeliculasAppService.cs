@@ -5,6 +5,7 @@ namespace WebApiPeliculas.Features.Peliculas
     public class PeliculasAppService
     {
         private List<Pelicula> peliculas = new List<Pelicula>();
+        private PeliculasDomainService domain;
 
         public PeliculasAppService()
         {
@@ -47,6 +48,8 @@ namespace WebApiPeliculas.Features.Peliculas
             pelicula5.Sinopsis = "";
             pelicula5.FechaEstreno = new DateTime(2000, 01, 01);
             peliculas.Add(pelicula5);
+
+            domain = new PeliculasDomainService();
         }
 
         /// <summary>
@@ -65,14 +68,17 @@ namespace WebApiPeliculas.Features.Peliculas
         }
 
         // Metodo para agregar una nueva pelicula
-        public List<Pelicula> GuadarPelicula(Pelicula pelicula)
+        public void GuadarPelicula(Pelicula pelicula)
         {
+            if (!domain.GuardarPelicula(pelicula))
+            {
+                return;
+            }
             peliculas.Add(pelicula);
-            return peliculas;
         }
 
         // Metodo para actualizar una pelicula existente
-        public List<Pelicula> ActualizarPelicula(Pelicula pelicula)
+        public void ActualizarPelicula(Pelicula pelicula)
         {
             Pelicula? peliculaExistente = 
                 peliculas.Where(x => x.Id  == pelicula.Id).FirstOrDefault();
@@ -80,7 +86,7 @@ namespace WebApiPeliculas.Features.Peliculas
             // En caso de no encontrarse, retornar
             if (peliculaExistente == null)
             {
-                return new List<Pelicula>();
+                return;
             }
 
             // En caso de encontrar un registro
@@ -89,8 +95,11 @@ namespace WebApiPeliculas.Features.Peliculas
             peliculaExistente.Categoria = pelicula.Categoria;
             peliculaExistente.Sinopsis = pelicula.Sinopsis;
             peliculaExistente.FechaEstreno = pelicula.FechaEstreno;
+        }
 
-            return peliculas;
+        public void EliminarPelicula(int id)
+        {
+            peliculas.RemoveAll(x => x.Id == id);
         }
     }
 }
